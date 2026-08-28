@@ -1,0 +1,232 @@
+.student-analytics-page {
+  min-height: 100vh;
+  background: #f7f7fb;
+  color: #1f1f2e;
+  font-family: Arial, sans-serif;
+}
+
+.student-analytics-header {
+  padding: 25px 35px;
+  background: white;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.analytics-back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  color: #7c3aed;
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+.analytics-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.analytics-title-icon {
+  width: 55px;
+  height: 55px;
+  border-radius: 15px;
+  background: #ede9fe;
+  color: #7c3aed;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.analytics-title h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.analytics-title p {
+  margin: 6px 0 0;
+  color: #888;
+  font-size: 14px;
+}
+
+.student-analytics-content {
+  max-width: 1300px;
+  margin: auto;
+  padding: 30px 35px;
+}
+
+.analytics-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.analytics-card {
+  background: white;
+  border: 1px solid #eeeeee;
+  border-radius: 18px;
+  padding: 22px;
+
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.analytics-card-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.analytics-card-icon.attendance {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.analytics-card-icon.engagement {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.analytics-card-icon.performance {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.analytics-card span {
+  color: #777;
+  font-size: 13px;
+}
+
+.analytics-card h2 {
+  margin: 4px 0;
+  font-size: 25px;
+}
+
+.analytics-card small {
+  color: #16a34a;
+  font-size: 12px;
+}
+
+.analytics-panel {
+  background: white;
+  border: 1px solid #eeeeee;
+  border-radius: 18px;
+  padding: 25px;
+  margin-bottom: 22px;
+}
+
+.analytics-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.analytics-panel-heading h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.analytics-panel-heading p {
+  margin: 6px 0 0;
+  color: #888;
+  font-size: 13px;
+}
+
+.analytics-panel-heading svg {
+  color: #7c3aed;
+}
+
+.chart-container {
+  width: 100%;
+  min-height: 300px;
+}
+
+.student-ai-analysis {
+  display: flex;
+  gap: 15px;
+  padding: 23px;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 18px;
+}
+
+.student-ai-icon {
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+
+  border-radius: 14px;
+  background: #7c3aed;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.student-ai-analysis h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.student-ai-analysis p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.ai-analysis-points {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.ai-analysis-points span {
+  color: #16a34a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.analytics-loading {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .analytics-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .student-analytics-header,
+  .student-analytics-content {
+    padding: 20px;
+  }
+
+  .analytics-title h1 {
+    font-size: 23px;
+  }
+
+  .analytics-panel {
+    padding: 18px;
+  }
+
+  .student-ai-analysis {
+    flex-direction: column;
+  }
+}

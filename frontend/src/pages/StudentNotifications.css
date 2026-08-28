@@ -1,0 +1,336 @@
+.student-notifications-page {
+  min-height: 100vh;
+  background: #f7f7fb;
+  color: #1f1f2e;
+  font-family: Arial, sans-serif;
+}
+
+.notifications-header {
+  background: white;
+  border-bottom: 1px solid #eeeeee;
+  padding: 25px 35px;
+}
+
+.notifications-back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  border: none;
+  background: transparent;
+
+  color: #7c3aed;
+  font-weight: 600;
+
+  cursor: pointer;
+  margin-bottom: 25px;
+}
+
+.notifications-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.notifications-title-icon {
+  width: 55px;
+  height: 55px;
+
+  border-radius: 15px;
+
+  background: #ede9fe;
+  color: #7c3aed;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notifications-title h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.notifications-title p {
+  margin: 6px 0 0;
+
+  color: #888;
+  font-size: 14px;
+}
+
+.notifications-content {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px 35px;
+}
+
+/* Summary */
+
+.notification-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+
+  margin-bottom: 25px;
+}
+
+.notification-summary div {
+  background: white;
+
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+
+  padding: 20px;
+}
+
+.notification-summary span {
+  display: block;
+
+  color: #777;
+  font-size: 13px;
+}
+
+.notification-summary strong {
+  display: block;
+
+  margin-top: 7px;
+
+  font-size: 27px;
+  color: #7c3aed;
+}
+
+/* Notification Card */
+
+.notification-list-card {
+  background: white;
+
+  border: 1px solid #eeeeee;
+  border-radius: 20px;
+
+  padding: 25px;
+}
+
+.notification-list-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 25px;
+}
+
+.notification-list-heading h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.notification-list-heading p {
+  margin: 6px 0 0;
+
+  color: #888;
+  font-size: 13px;
+}
+
+.notification-list-heading svg {
+  color: #7c3aed;
+}
+
+/* Notification */
+
+.notification-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.notification-item {
+  display: flex;
+  gap: 15px;
+
+  padding: 18px 0;
+
+  border-bottom: 1px solid #eeeeee;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-icon {
+  width: 45px;
+  height: 45px;
+
+  flex-shrink: 0;
+
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-item.warning .notification-icon {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.notification-item.ai .notification-icon {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.notification-item.attendance .notification-icon {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.notification-item.academic .notification-icon {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+
+.notification-item.success .notification-icon {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.notification-details {
+  flex: 1;
+}
+
+.notification-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.notification-top h3 {
+  margin: 0;
+
+  font-size: 15px;
+}
+
+.notification-top span {
+  color: #999;
+  font-size: 12px;
+}
+
+.notification-details p {
+  margin: 7px 0 0;
+
+  color: #666;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* AI Intervention */
+
+.intervention-card {
+  display: flex;
+  gap: 18px;
+
+  margin-top: 25px;
+
+  padding: 25px;
+
+  background: #f5f3ff;
+
+  border: 1px solid #ddd6fe;
+  border-radius: 20px;
+}
+
+.intervention-icon {
+  width: 50px;
+  height: 50px;
+
+  flex-shrink: 0;
+
+  border-radius: 14px;
+
+  background: #7c3aed;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intervention-card h2 {
+  margin: 0 0 8px;
+
+  font-size: 19px;
+}
+
+.intervention-card p {
+  margin: 0;
+
+  color: #666;
+
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.intervention-card button {
+  margin-top: 15px;
+
+  padding: 10px 16px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: #7c3aed;
+  color: white;
+
+  cursor: pointer;
+
+  font-weight: 600;
+}
+
+.intervention-card button:hover {
+  opacity: 0.9;
+}
+
+/* Loading */
+
+.notifications-loading {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive */
+
+@media (max-width: 800px) {
+
+  .notification-summary {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .notifications-header,
+  .notifications-content {
+    padding: 20px;
+  }
+
+  .notifications-title h1 {
+    font-size: 23px;
+  }
+
+  .notification-list-card {
+    padding: 18px;
+  }
+
+  .notification-top {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .intervention-card {
+    flex-direction: column;
+  }
+
+}
