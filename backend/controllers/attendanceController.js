@@ -1,7 +1,8 @@
 const Attendance = require("../models/Attendance");
+const User = require("../models/User");
 
 // ========================================
-// Mark Attendance
+// MARK ATTENDANCE
 // ========================================
 const markAttendance = async (req, res) => {
   try {
@@ -9,16 +10,28 @@ const markAttendance = async (req, res) => {
       student,
       subject,
       activity,
-      status,
       date,
-      markedBy
+      status,
     } = req.body;
 
-    // Validate required fields
+    // Check required fields
     if (!student || !subject || !status) {
       return res.status(400).json({
         success: false,
-        message: "Student, subject and status are required"
+        message: "Student, subject and status are required",
+      });
+    }
+
+    // Check student exists
+    const studentUser = await User.findOne({
+      _id: student,
+      role: "student",
+    });
+
+    if (!studentUser) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
       });
     }
 
@@ -27,15 +40,15 @@ const markAttendance = async (req, res) => {
       student,
       subject,
       activity: activity || "Class",
+      date: date || Date.now(),
       status,
-      date: date || new Date(),
-      markedBy: markedBy || undefined
+      markedBy: req.user ? req.user._id : undefined,
     });
 
     res.status(201).json({
       success: true,
       message: "Attendance marked successfully",
-      attendance
+      attendance,
     });
 
   } catch (error) {
@@ -43,27 +56,31 @@ const markAttendance = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
 
 
 // ========================================
-// Get All Attendance Records
+// GET ALL ATTENDANCE
 // ========================================
-const getAttendance = async (req, res) => {
+const getAllAttendance = async (req, res) => {
   try {
     const attendance = await Attendance.find()
       .populate(
         "student",
-        "name registerNumber department year"
+        "name email registerNumber department year section"
+      )
+      .populate(
+        "markedBy",
+        "name email role"
       )
       .sort({ date: -1 });
 
     res.json({
       success: true,
-      attendance
+      attendance,
     });
 
   } catch (error) {
@@ -71,29 +88,31 @@ const getAttendance = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
 
 
 // ========================================
-// Get Attendance of One Student
+// GET ATTENDANCE OF ONE STUDENT
 // ========================================
 const getStudentAttendance = async (req, res) => {
   try {
+    const { studentId } = req.params;
+
     const attendance = await Attendance.find({
-      student: req.params.studentId
+      student: studentId,
     })
       .populate(
         "student",
-        "name registerNumber department year"
+        "name email registerNumber department year section"
       )
       .sort({ date: -1 });
 
     res.json({
       success: true,
-      attendance
+      attendance,
     });
 
   } catch (error) {
@@ -101,7 +120,107 @@ const getStudentAttendance = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
+    });
+  }
+};
+
+
+// ========================================
+// GET ATTENDANCE BY SUBJECT
+// ========================================
+const getSubjectAttendance = async (req, res) => {
+  try {
+    const { studentId, subject } = req.params;
+
+    const attendance = await Attendance.find({
+      student: studentId,
+      subject,
+    }).sort({ date: -1 });
+
+    res.json({
+      success: true,
+      attendance,
+    });
+
+  } catch (error) {
+    console.error("Get subject attendance error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+// ========================================
+// UPDATE ATTENDANCE
+// ========================================
+const updateAttendance = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const attendance = await Attendance.findByIdAndUpdate(
+      id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!attendance) {
+      return res.status(404).json({
+        success: false,
+        message: "Attendance record not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Attendance updated successfully",
+      attendance,
+    });
+
+  } catch (error) {
+    console.error("Update attendance error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+// ========================================
+// DELETE ATTENDANCE
+// ========================================
+const deleteAttendance = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const attendance = await Attendance.findByIdAndDelete(id);
+
+    if (!attendance) {
+      return res.status(404).json({
+        success: false,
+        message: "Attendance record not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Attendance deleted successfully",
+    });
+
+  } catch (error) {
+    console.error("Delete attendance error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };
@@ -109,6 +228,9 @@ const getStudentAttendance = async (req, res) => {
 
 module.exports = {
   markAttendance,
-  getAttendance,
-  getStudentAttendance
+  getAllAttendance,
+  getStudentAttendance,
+  getSubjectAttendance,
+  updateAttendance,
+  deleteAttendance,
 };

@@ -1,49 +1,49 @@
 const mongoose = require("mongoose");
 
-const studentSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      unique: true,
-    },
-
     name: {
       type: String,
       required: true,
-    },
-
-    registerNumber: {
-      type: String,
-      required: true,
-      unique: true,
+      trim: true,
     },
 
     email: {
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
+      trim: true,
     },
 
-    department: {
+    password: {
       type: String,
       required: true,
     },
 
+    role: {
+      type: String,
+      enum: ["student", "faculty"],
+      required: true,
+    },
+
+    registerNumber: {
+      type: String,
+      trim: true,
+    },
+
+    department: {
+      type: String,
+      trim: true,
+    },
+
     year: {
       type: Number,
-      required: true,
     },
 
     section: {
       type: String,
       enum: ["A", "B", "C", "D"],
-      required: true,
-    },
-
-    semester: {
-      type: Number,
     },
   },
   {
@@ -51,4 +51,4 @@ const studentSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Student", studentSchema);
+module.exports = mongoose.model("User", userSchema);

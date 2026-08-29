@@ -8,12 +8,17 @@ async function predictAttendanceRisk(data) {
     );
 
     return response.data;
+
   } catch (error) {
-    console.error("AI Service Error:", error.message);
+    console.error(
+      "AI Service Error:",
+      error.response?.data || error.message
+    );
+
     throw error;
   }
 }
 
 module.exports = {
-  predictAttendanceRisk,
+  predictAttendanceRisk
 };

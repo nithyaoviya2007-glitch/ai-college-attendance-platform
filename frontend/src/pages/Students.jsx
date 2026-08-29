@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
   Search,
@@ -14,75 +14,60 @@ import { useNavigate } from "react-router-dom";
 import "./Students.css";
 
 function Students() {
-
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
   const [department, setDepartment] = useState("All");
 
-  const students = [
-    {
-      id: 1,
-      name: "Arun Kumar",
-      roll: "CS23A001",
-      department: "CSE",
-      year: "3rd Year",
-      attendance: 62,
-      engagement: 48,
-      risk: 82,
-      status: "High"
-    },
-    {
-      id: 2,
-      name: "Priya Sharma",
-      roll: "IT23A014",
-      department: "IT",
-      year: "3rd Year",
-      attendance: 71,
-      engagement: 64,
-      risk: 61,
-      status: "Medium"
-    },
-    {
-      id: 3,
-      name: "Rahul Raj",
-      roll: "CS23A027",
-      department: "CSE",
-      year: "3rd Year",
-      attendance: 91,
-      engagement: 87,
-      risk: 18,
-      status: "Low"
-    },
-    {
-      id: 4,
-      name: "Divya S",
-      roll: "ECE23A021",
-      department: "ECE",
-      year: "3rd Year",
-      attendance: 78,
-      engagement: 72,
-      risk: 39,
-      status: "Low"
-    },
-    {
-      id: 5,
-      name: "Karthik M",
-      roll: "IT23A033",
-      department: "IT",
-      year: "3rd Year",
-      attendance: 58,
-      engagement: 43,
-      risk: 88,
-      status: "High"
-    }
-  ];
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
+  // ================================
+  // GET STUDENTS FROM BACKEND
+  // ================================
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch(
+          "http://localhost:5000/api/students"
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch students");
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          setStudents(data.students);
+        } else {
+          throw new Error(data.message || "Failed to load students");
+        }
+      } catch (err) {
+        console.error("Student fetch error:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
+  // ================================
+  // SEARCH + FILTER
+  // ================================
   const filteredStudents = students.filter((student) => {
+    const searchText = search.toLowerCase();
 
     const matchesSearch =
-      student.name.toLowerCase().includes(search.toLowerCase()) ||
-      student.roll.toLowerCase().includes(search.toLowerCase());
+      student.name?.toLowerCase().includes(searchText) ||
+      student.registerNumber?.toLowerCase().includes(searchText) ||
+      student.email?.toLowerCase().includes(searchText);
 
     const matchesDepartment =
       department === "All" ||
@@ -91,21 +76,18 @@ function Students() {
     return matchesSearch && matchesDepartment;
   });
 
-  const getRiskClass = (status) => {
-
-    if (status === "High") return "high";
-
-    if (status === "Medium") return "medium";
-
-    return "low";
-  };
+  // ================================
+  // DEPARTMENTS
+  // ================================
+  const departments = [
+    "All",
+    ...new Set(students.map((student) => student.department))
+  ];
 
   return (
-
     <div className="students-page">
 
       {/* HEADER */}
-
       <header className="students-header">
 
         <button
@@ -129,24 +111,18 @@ function Students() {
         </div>
 
         <div className="student-count">
-
           <Users size={15} />
-
           {students.length} Students
-
         </div>
 
       </header>
 
-
       <main className="students-container">
 
         {/* TITLE */}
-
         <section className="students-title">
 
           <div>
-
             <p>
               ACADEMIC MANAGEMENT
             </p>
@@ -158,14 +134,11 @@ function Students() {
             <span>
               Monitor attendance, engagement and AI risk levels.
             </span>
-
           </div>
 
         </section>
 
-
         {/* STATS */}
-
         <section className="student-stats">
 
           <div className="stat-card">
@@ -174,10 +147,12 @@ function Students() {
               <Users size={18} />
             </div>
 
-            <span>Total Students</span>
+            <span>
+              Total Students
+            </span>
 
             <strong>
-              1,248
+              {students.length}
             </strong>
 
           </div>
@@ -189,10 +164,12 @@ function Students() {
               <Brain size={18} />
             </div>
 
-            <span>High Risk</span>
+            <span>
+              High Risk
+            </span>
 
             <strong>
-              86
+              -
             </strong>
 
           </div>
@@ -204,10 +181,12 @@ function Students() {
               <TrendingUp size={18} />
             </div>
 
-            <span>Average Attendance</span>
+            <span>
+              Average Attendance
+            </span>
 
             <strong>
-              82%
+              -
             </strong>
 
           </div>
@@ -219,10 +198,12 @@ function Students() {
               <UserRound size={18} />
             </div>
 
-            <span>Active Students</span>
+            <span>
+              Active Students
+            </span>
 
             <strong>
-              1,162
+              {students.length}
             </strong>
 
           </div>
@@ -231,7 +212,6 @@ function Students() {
 
 
         {/* SEARCH */}
-
         <section className="student-tools">
 
           <div className="search-box">
@@ -240,11 +220,9 @@ function Students() {
 
             <input
               type="text"
-              placeholder="Search by student name or roll number..."
+              placeholder="Search by student name, register number or email..."
               value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
+              onChange={(e) => setSearch(e.target.value)}
             />
 
           </div>
@@ -256,26 +234,19 @@ function Students() {
 
             <select
               value={department}
-              onChange={(e) =>
-                setDepartment(e.target.value)
-              }
+              onChange={(e) => setDepartment(e.target.value)}
             >
 
-              <option value="All">
-                All Departments
-              </option>
-
-              <option value="CSE">
-                CSE
-              </option>
-
-              <option value="IT">
-                IT
-              </option>
-
-              <option value="ECE">
-                ECE
-              </option>
+              {departments.map((dept) => (
+                <option
+                  key={dept}
+                  value={dept}
+                >
+                  {dept === "All"
+                    ? "All Departments"
+                    : dept}
+                </option>
+              ))}
 
             </select>
 
@@ -285,7 +256,6 @@ function Students() {
 
 
         {/* TABLE */}
-
         <section className="students-table-card">
 
           <div className="table-header">
@@ -296,7 +266,7 @@ function Students() {
               </h2>
 
               <p>
-                AI-powered academic monitoring
+                Real-time student data from MongoDB
               </p>
             </div>
 
@@ -307,198 +277,184 @@ function Students() {
           </div>
 
 
-          <div className="table-wrapper">
-
-            <table>
-
-              <thead>
-
-                <tr>
-
-                  <th>
-                    STUDENT
-                  </th>
-
-                  <th>
-                    DEPARTMENT
-                  </th>
-
-                  <th>
-                    ATTENDANCE
-                  </th>
-
-                  <th>
-                    ENGAGEMENT
-                  </th>
-
-                  <th>
-                    AI RISK
-                  </th>
-
-                  <th>
-                    ACTION
-                  </th>
-
-                </tr>
-
-              </thead>
-
-
-              <tbody>
-
-                {filteredStudents.map((student) => (
-
-                  <tr key={student.id}>
-
-                    <td>
-
-                      <div className="student-info">
-
-                        <div className="student-avatar">
-                          {student.name.charAt(0)}
-                        </div>
-
-                        <div>
-
-                          <strong>
-                            {student.name}
-                          </strong>
-
-                          <small>
-                            {student.roll}
-                          </small>
-
-                        </div>
-
-                      </div>
-
-                    </td>
-
-
-                    <td>
-
-                      <span className="department">
-                        {student.department}
-                      </span>
-
-                      <small className="year">
-                        {student.year}
-                      </small>
-
-                    </td>
-
-
-                    <td>
-
-                      <div className="attendance-cell">
-
-                        <strong>
-                          {student.attendance}%
-                        </strong>
-
-                        <div className="progress">
-
-                          <span
-                            style={{
-                              width:
-                                `${student.attendance}%`
-                            }}
-                          />
-
-                        </div>
-
-                      </div>
-
-                    </td>
-
-
-                    <td>
-
-                      <div className="engagement">
-
-                        <strong>
-                          {student.engagement}
-                        </strong>
-
-                        <small>
-                          /100
-                        </small>
-
-                      </div>
-
-                    </td>
-
-
-                    <td>
-
-                      <div className="risk-cell">
-
-                        <span
-                          className={
-                            `risk-badge ${getRiskClass(student.status)}`
-                          }
-                        >
-                          {student.risk}%
-                        </span>
-
-                        <small>
-                          {student.status}
-                        </small>
-
-                      </div>
-
-                    </td>
-
-
-                    <td>
-
-                      <button
-                        className="view-button"
-                        onClick={() => {
-
-                          if (student.status === "High") {
-                            navigate("/risk-monitor");
-                          }
-
-                        }}
-                      >
-
-                        View
-
-                        <ChevronRight size={14} />
-
-                      </button>
-
-                    </td>
-
-                  </tr>
-
-                ))}
-
-              </tbody>
-
-            </table>
-
-          </div>
-
-
-          {filteredStudents.length === 0 && (
-
+          {/* LOADING */}
+          {loading && (
             <div className="no-students">
-
-              <Users size={30} />
-
               <h3>
-                No students found
+                Loading students...
               </h3>
 
               <p>
-                Try changing your search or department filter.
+                Connecting to the backend.
               </p>
+            </div>
+          )}
+
+
+          {/* ERROR */}
+          {!loading && error && (
+            <div className="no-students">
+
+              <h3>
+                Unable to load students
+              </h3>
+
+              <p>
+                {error}
+              </p>
+
+              <p>
+                Make sure your backend is running on port 5000.
+              </p>
+
+            </div>
+          )}
+
+
+          {/* TABLE */}
+          {!loading && !error && filteredStudents.length > 0 && (
+
+            <div className="table-wrapper">
+
+              <table>
+
+                <thead>
+
+                  <tr>
+
+                    <th>
+                      STUDENT
+                    </th>
+
+                    <th>
+                      DEPARTMENT
+                    </th>
+
+                    <th>
+                      EMAIL
+                    </th>
+
+                    <th>
+                      YEAR
+                    </th>
+
+                    <th>
+                      ACTION
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                  {filteredStudents.map((student) => (
+
+                    <tr key={student._id}>
+
+                      {/* STUDENT */}
+
+                      <td>
+
+                        <div className="student-info">
+
+                          <div className="student-avatar">
+                            {student.name?.charAt(0).toUpperCase()}
+                          </div>
+
+                          <div>
+
+                            <strong>
+                              {student.name}
+                            </strong>
+
+                            <small>
+                              {student.registerNumber}
+                            </small>
+
+                          </div>
+
+                        </div>
+
+                      </td>
+
+
+                      {/* DEPARTMENT */}
+
+                      <td>
+
+                        <span className="department">
+                          {student.department}
+                        </span>
+
+                      </td>
+
+
+                      {/* EMAIL */}
+
+                      <td>
+                        {student.email}
+                      </td>
+
+
+                      {/* YEAR */}
+
+                      <td>
+                        {student.year}
+                      </td>
+
+
+                      {/* ACTION */}
+
+                      <td>
+
+                        <button
+                          className="view-button"
+                          onClick={() =>
+                            navigate(`/students/${student._id}`)
+                          }
+                        >
+                          View
+                          <ChevronRight size={14} />
+                        </button>
+
+                      </td>
+
+                    </tr>
+
+                  ))}
+
+                </tbody>
+
+              </table>
 
             </div>
 
           )}
+
+
+          {/* NO RESULTS */}
+
+          {!loading &&
+            !error &&
+            filteredStudents.length === 0 && (
+
+              <div className="no-students">
+
+                <Users size={30} />
+
+                <h3>
+                  No students found
+                </h3>
+
+                <p>
+                  Try changing your search or department filter.
+                </p>
+
+              </div>
+
+            )}
 
         </section>
 

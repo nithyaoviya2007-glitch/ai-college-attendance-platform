@@ -10,6 +10,7 @@ dns.setServers(["1.1.1.1", "1.0.0.1"]);
 // ========================================
 const express = require("express");
 const cors = require("cors");
+
 require("dotenv").config();
 
 // ========================================
@@ -23,16 +24,23 @@ const connectDB = require("./config/db");
 const studentRoutes = require("./routes/studentRoutes");
 const attendanceRoutes = require("./routes/attendanceRoutes");
 const aiRoutes = require("./routes/aiRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 // ========================================
-// Create Express app
+// Create Express App
 // ========================================
 const app = express();
 
 // ========================================
 // Middleware
 // ========================================
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // ========================================
@@ -41,27 +49,68 @@ app.use(express.json());
 app.use("/api/students", studentRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/auth", authRoutes);
 
 // ========================================
-// Test route
+// Health Check
 // ========================================
 app.get("/", (req, res) => {
-  res.json({
+  res.status(200).json({
     success: true,
-    message: "AI College Attendance Backend is running!"
+    message: "AI College Attendance Backend is running!",
   });
 });
 
 // ========================================
-// Start server
+// 404 Handler
 // ========================================
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route ${req.method} ${req.originalUrl} not found`,
+  });
 });
 
 // ========================================
-// Connect to MongoDB
+// Global Error Handler
 // ========================================
-connectDB();
+app.use((err, req, res, next) => {
+  console.error("Server Error:", err);
+
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
+
+// ========================================
+// Start Server
+// ========================================
+const PORT = process.env.PORT || 5000;
+
+const startServer = async () => {
+  try {
+    // Connect MongoDB
+    await connectDB();
+
+    // Start Express
+    app.listen(PORT, () => {
+      console.log("========================================");
+      console.log(" AI COLLEGE ATTENDANCE PLATFORM");
+      console.log("========================================");
+      console.log(`Backend: http://localhost:${PORT}`);
+      console.log(`Frontend: http://localhost:5173`);
+      console.log("MongoDB: Connected");
+      console.log("AI Service: http://127.0.0.1:5001");
+      console.log("========================================");
+    });
+  } catch (error) {
+    console.error("========================================");
+    console.error("FAILED TO START SERVER");
+    console.error("========================================");
+    console.error(error.message);
+    process.exit(1);
+  }
+};
+
+startServer();
